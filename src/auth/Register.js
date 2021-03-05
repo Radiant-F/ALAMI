@@ -10,6 +10,7 @@ import {
   TouchableNativeFeedback,
   ImageBackground,
   ScrollView,
+  ToastAndroid,
 } from 'react-native';
 import {styles} from './Login';
 
@@ -27,13 +28,23 @@ export default class Register extends Component {
     };
   }
 
-  login() {
-    if (this.state.email && this.state.password != '') {
+  register() {
+    if (
+      this.state.name &&
+      this.state.email &&
+      this.state.password &&
+      this.state.password_confirmation != ''
+    ) {
       this.setState({loading: true});
-      console.log('mencoba login..');
-      const {email, password} = this.state;
-      let kirimData = {email: email, password: password};
-      fetch('https://mini-project-e.herokuapp.com/api/login', {
+      console.log('mendaftar..');
+      const {name, email, password, password_confirmation} = this.state;
+      let kirimData = {
+        name: name,
+        email: email,
+        password: password,
+        password_confirmation: password_confirmation,
+      };
+      fetch('', {
         method: 'POST',
         body: JSON.stringify(kirimData),
         headers: {
@@ -44,43 +55,30 @@ export default class Register extends Component {
         .then((responseJSON) => {
           console.log(responseJSON);
           if (responseJSON.token != null) {
-            // this.props.changeUser({token: responseJSON.token});
             AsyncStorage.setItem('token', responseJSON.token);
             this.props.navigation.replace('Dashboard');
           } else {
             this.setState({loading: false});
-            this.failed();
+            this.fatal();
           }
         })
-        .catch((err) => console.log('Terjadi Kesalahan. ', err));
+        .catch((err) => this.fatal(err));
     } else {
       this.setState({loading: false});
-      this.warning();
+      ToastAndroid.show('Harap isi yang benar', ToastAndroid.SHORT);
     }
   }
 
-  failed() {
+  fatal(err) {
+    console.log(err);
     Alert.alert(
-      'Data tidak ditemukan',
-      'Masukan data dengan benar atau daftar.',
+      'Kesalahan Koneksi',
+      'Harap periksa koneksi Anda',
       [
         {
-          text: 'Daftar',
-          onPress: () => this.props.navigation.navigate('Register'),
+          text: 'Ulangi',
+          onPress: () => this.register(),
         },
-        {
-          text: 'Ok',
-        },
-      ],
-      {cancelable: false},
-    );
-  }
-
-  warning() {
-    Alert.alert(
-      '',
-      'Harap isi semua forum.',
-      [
         {
           text: 'Ok',
         },
