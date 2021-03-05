@@ -1,6 +1,6 @@
 import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import Dashboard from '../screen/Dashboard';
+import Dashboard from '../screen/user/Dashboard';
 import Content from '../components/Drawer';
 
 const Slide = createDrawerNavigator();
