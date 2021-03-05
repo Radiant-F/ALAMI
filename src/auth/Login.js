@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import CheckBox from '@react-native-community/checkbox';
 import {
   Text,
   View,
@@ -25,10 +26,11 @@ class Login extends Component {
       token: '',
       secure: true,
       loading: false,
+      remember: false,
     };
   }
 
-  login() {
+  login1() {
     if (this.state.email && this.state.password != '') {
       this.setState({loading: true});
       console.log('mencoba login..');
@@ -46,7 +48,9 @@ class Login extends Component {
           console.log(responseJSON);
           if (responseJSON.token != null) {
             this.props.changeUser({token: responseJSON.token});
-            AsyncStorage.setItem('token', responseJSON.token);
+            this.state.remember
+              ? AsyncStorage.setItem('token', responseJSON.token)
+              : console.log('data tidak diingat');
             this.props.navigation.replace('Dashboard');
           } else {
             this.setState({loading: false});
@@ -57,6 +61,10 @@ class Login extends Component {
     } else {
       ToastAndroid.show('Harap isi yang benar', ToastAndroid.SHORT);
     }
+  }
+
+  login() {
+    this.props.navigation.replace('Dashboard', {screen: 'Dashboard'});
   }
 
   failed() {
@@ -154,6 +162,26 @@ class Login extends Component {
                       )}
                     </View>
                   </View>
+                  <View style={styles.viewSplitter}>
+                    <View style={{alignItems: 'center', flexDirection: 'row'}}>
+                      <CheckBox
+                        onValueChange={() =>
+                          this.setState({remember: !this.state.remember})
+                        }
+                        value={this.state.remember}
+                        tintColors={{true: 'orange', false: 'black'}}
+                      />
+                      <Text>Ingat Saya</Text>
+                    </View>
+                    <TouchableNativeFeedback
+                      onPress={() =>
+                        this.props.navigation.navigate('Register')
+                      }>
+                      <View>
+                        <Text style={{fontWeight: 'bold'}}>Daftar</Text>
+                      </View>
+                    </TouchableNativeFeedback>
+                  </View>
                   {this.state.loading ? (
                     <View style={styles.button}>
                       <ActivityIndicator color="white" size="small" />
@@ -168,7 +196,7 @@ class Login extends Component {
                   <TouchableNativeFeedback
                     onPress={() => this.props.navigation.navigate('Register')}>
                     <View style={{marginTop: 10}}>
-                      <Text style={{fontWeight: 'bold'}}>Daftar</Text>
+                      <Text style={{color: 'grey'}}>Lupa Password</Text>
                     </View>
                   </TouchableNativeFeedback>
                 </View>
@@ -199,14 +227,14 @@ export const styles = StyleSheet.create({
   subView: {
     backgroundColor: 'orange',
     elevation: 3,
-    borderRadius: 10,
-    paddingBottom: 5,
-    paddingTop: 10,
-    width: '90%',
+    // borderRadius: 10,
+    paddingBottom: 2.5,
+    paddingTop: 7.5,
+    width: '95%',
   },
   mainSubView: {
     backgroundColor: 'white',
-    borderRadius: 10,
+    // borderRadius: 10,
     padding: 10,
     alignItems: 'center',
   },
@@ -242,6 +270,11 @@ export const styles = StyleSheet.create({
       width: 0.5,
       height: 0.5,
     },
+  },
+  viewSplitter: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    width: '95%',
   },
 });
 
