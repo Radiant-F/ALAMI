@@ -6,6 +6,7 @@ import Drawer from './Drawer';
 import Login from '../auth/Login';
 import Intro from '../components/Intro';
 import Register from '../auth/Register';
+import KirimLaporan from '../screen/user/KirimLaporan';
 
 const Stack = createStackNavigator();
 const Navigator = () => {
@@ -16,6 +17,7 @@ const Navigator = () => {
         <Stack.Screen name="Intro" component={Intro} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="KirimLaporan" component={KirimLaporan} />
         <Stack.Screen name="Dashboard" component={Drawer} />
       </Stack.Navigator>
     </NavigationContainer>
