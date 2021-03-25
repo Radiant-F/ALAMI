@@ -25,6 +25,8 @@ export default class Dashboard extends Component {
       komentar: [],
       isi_komentar: '',
       modal: false,
+      report: true,
+      saved: false,
     };
   }
 
@@ -190,15 +192,25 @@ export default class Dashboard extends Component {
                     <Text>Komentar</Text>
                   </View>
                 </TouchableNativeFeedback>
-                <TouchableOpacity>
-                  <Image
-                    source={require('../../assets/bookmark-outline.png')}
-                    style={styles.imgIcon}
-                  />
+                <TouchableOpacity
+                  onPress={() => this.setState({saved: !this.state.saved})}>
+                  {this.state.saved ? (
+                    <Image
+                      source={require('../../assets/bookmark-ribbon.png')}
+                      style={styles.imgIcon}
+                    />
+                  ) : (
+                    <Image
+                      source={require('../../assets/bookmark-outline.png')}
+                      style={styles.imgIcon}
+                    />
+                  )}
                 </TouchableOpacity>
               </View>
               <View style={styles.viewCommentField}>
                 <TextInput
+                  onEndEditing={() => this.setState({report: true})}
+                  onFocus={() => this.setState({report: false})}
                   underlineColorAndroid="orange"
                   style={{flex: 1, marginRight: 20}}
                   placeholder="Berikan Tanggapan.."
@@ -218,56 +230,66 @@ export default class Dashboard extends Component {
             onRequestClose={() => this.setState({modal: false})}
             animationType="slide"
             transparent>
-            <View style={modal.mainView}>
-              <View style={modal.viewContainer}>
-                <View style={styles.viewCommentUser}>
-                  <Image
-                    source={require('../../assets/plainAvatar.png')}
-                    style={styles.imgComment}
-                  />
-                  <View style={{flex: 1}}>
-                    <Text style={{fontWeight: 'bold'}}> Om Agus</Text>
-                    <View style={styles.viewMainComment}>
-                      <Text>
-                        Lubangnya banyak 0 jlskdjfl sdkjfl sje posdflkjsdf op
-                        sdlfjsldkfj
+            <TouchableWithoutFeedback
+              onPress={() => this.setState({modal: false})}>
+              <View style={modal.mainView}>
+                <View style={modal.viewContainer}>
+                  <View style={styles.viewCommentUser}>
+                    <Image
+                      source={require('../../assets/plainAvatar.png')}
+                      style={styles.imgComment}
+                    />
+                    <View style={{flex: 1}}>
+                      <Text style={{fontWeight: 'bold', marginBottom: 2.5}}>
+                        {' '}
+                        Om Agus
                       </Text>
+                      <View style={styles.viewMainComment}>
+                        <Text>
+                          Lubangnya banyak 0 jlskdjfl sdkjfl sje posdflkjsdf op
+                          sdlfjsldkfj
+                        </Text>
+                      </View>
                     </View>
                   </View>
-                </View>
-                <View style={styles.viewCommentField}>
-                  <TextInput
-                    underlineColorAndroid="orange"
-                    style={{flex: 1, marginRight: 20}}
-                    placeholder="Berikan Tanggapan.."
-                    onChangeText={(input) =>
-                      this.setState({isi_komentar: input})
-                    }
-                  />
-                  <TouchableOpacity>
-                    <Image
-                      source={require('../../assets/send-button.png')}
-                      style={{width: 30, height: 30}}
+                  <View style={styles.viewCommentField}>
+                    <TextInput
+                      underlineColorAndroid="orange"
+                      style={{flex: 1, marginRight: 20}}
+                      placeholder="Berikan Tanggapan.."
+                      onChangeText={(input) =>
+                        this.setState({isi_komentar: input})
+                      }
                     />
-                  </TouchableOpacity>
+                    <TouchableOpacity>
+                      <Image
+                        source={require('../../assets/send-button.png')}
+                        style={{width: 30, height: 30}}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
-            </View>
+            </TouchableWithoutFeedback>
           </Modal>
         </ScrollView>
-        <TouchableNativeFeedback>
-          <View style={styles.buttonLaporan}>
-            <Image
-              source={require('../../assets/report-symbol.png')}
-              style={styles.imgReport}
-            />
-            <Text style={styles.textReport}>Kirim Laporan</Text>
-            <Image
-              source={require('../../assets/report-symbol.png')}
-              style={styles.imgReport}
-            />
-          </View>
-        </TouchableNativeFeedback>
+        {this.state.report ? (
+          <TouchableNativeFeedback>
+            <View style={styles.buttonLaporan}>
+              <Image
+                source={require('../../assets/report-symbol.png')}
+                style={styles.imgReport}
+              />
+              <Text style={styles.textReport}>Kirim Laporan</Text>
+              <Image
+                source={require('../../assets/report-symbol.png')}
+                style={styles.imgReport}
+              />
+            </View>
+          </TouchableNativeFeedback>
+        ) : (
+          <View />
+        )}
       </View>
     );
   }
@@ -283,10 +305,11 @@ export const modal = StyleSheet.create({
   },
   viewContainer: {
     backgroundColor: 'white',
-    width: '95%',
+    width: '90%',
     borderRadius: 10,
     elevation: 3,
     padding: 10,
+    maxWidth: 720,
   },
 });
 
@@ -297,6 +320,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     elevation: 3,
     padding: 10,
+    maxWidth: 720,
+    alignSelf: 'center',
   },
   imgPP: {
     width: 50,
