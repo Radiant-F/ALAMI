@@ -231,6 +231,7 @@ export const styles = StyleSheet.create({
     paddingBottom: 2.5,
     paddingTop: 7.5,
     width: '95%',
+    maxWidth: 480,
   },
   mainSubView: {
     backgroundColor: 'white',
